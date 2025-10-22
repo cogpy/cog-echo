@@ -142,8 +142,12 @@ class OpenCogInferenceEngine:
         
         # Load fragments as predicates
         for fragment_id, fragment in self.memory.fragments.items():
+            # Sanitize inputs to prevent injection
+            safe_fragment_id = str(fragment_id).replace('"', '').replace("'", "")
+            safe_aspect_value = fragment.aspect.value.replace('"', '').replace("'", "")
+            
             # Create fragment concept
-            self.metta.run(f'!(add-atom (Concept "fragment_{fragment_id}"))')
+            self.metta.run(f'!(add-atom (Concept "fragment_{safe_fragment_id}"))')
             
             # Add fragment properties
             self.metta.run(f'''
@@ -151,17 +155,21 @@ class OpenCogInferenceEngine:
               (Evaluation 
                 (Predicate "has_aspect")
                 (List 
-                  (Concept "fragment_{fragment_id}")
-                  (Concept "{fragment.aspect.value}"))))
+                  (Concept "fragment_{safe_fragment_id}")
+                  (Concept "{safe_aspect_value}"))))
             ''')
+            
+            # Validate confidence value
+            safe_confidence = max(0.0, min(1.0, float(fragment.confidence)))
+            safe_framework = fragment.framework_source.replace('"', '').replace("'", "")
             
             self.metta.run(f'''
             !(add-atom 
               (Evaluation 
                 (Predicate "has_confidence")
                 (List 
-                  (Concept "fragment_{fragment_id}")
-                  (Number {fragment.confidence}))))
+                  (Concept "fragment_{safe_fragment_id}")
+                  (Number {safe_confidence}))))
             ''')
             
             self.metta.run(f'''
@@ -169,31 +177,35 @@ class OpenCogInferenceEngine:
               (Evaluation 
                 (Predicate "has_framework")
                 (List 
-                  (Concept "fragment_{fragment_id}")
-                  (Concept "{fragment.framework_source}"))))
+                  (Concept "fragment_{safe_fragment_id}")
+                  (Concept "{safe_framework}"))))
             ''')
             
             # Add keywords as features
             for keyword in fragment.keywords:
+                safe_keyword = str(keyword).replace('"', '').replace("'", "")
                 self.metta.run(f'''
                 !(add-atom 
                   (Evaluation 
                     (Predicate "has_keyword")
                     (List 
-                      (Concept "fragment_{fragment_id}")
-                      (Concept "{keyword}"))))
+                      (Concept "fragment_{safe_fragment_id}")
+                      (Concept "{safe_keyword}"))))
                 ''')
         
         # Load refinement relationships
         for tuple_id, refinement in self.memory.tuples.items():
             if refinement.parent_id:
+                safe_child_id = str(refinement.child_id).replace('"', '').replace("'", "")
+                safe_parent_id = str(refinement.parent_id).replace('"', '').replace("'", "")
+                
                 self.metta.run(f'''
                 !(add-atom 
                   (Evaluation 
                     (Predicate "refines")
                     (List 
-                      (Concept "fragment_{refinement.child_id}")
-                      (Concept "fragment_{refinement.parent_id}"))))
+                      (Concept "fragment_{safe_child_id}")
+                      (Concept "fragment_{safe_parent_id}"))))
                 ''')
                 
         # Add inference rules

@@ -5,6 +5,7 @@ Provides OpenCog inference capabilities as a framework membrane
 
 import sys
 import json
+import numpy as np
 from typing import Dict, List, Optional, Any
 from dataclasses import dataclass, asdict
 import threading
@@ -305,8 +306,6 @@ class OpenCogMembrane:
         """Calculate diversity of reservoir parameters"""
         if len(params) < 2:
             return 0.0
-        
-        import numpy as np
         
         # Create parameter matrix
         param_matrix = []

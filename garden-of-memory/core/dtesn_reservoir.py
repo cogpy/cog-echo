@@ -87,10 +87,17 @@ class IdentityDrivenReservoir:
                                    shape=(self.reservoir_size, self.reservoir_size))
         
         # Scale to desired spectral radius
-        eigenvalues = sp.linalg.eigs(self.W_res, k=1, which='LM', return_eigenvectors=False)
-        current_radius = np.abs(eigenvalues[0])
-        if current_radius > 0:
-            self.W_res *= self.params.spectral_radius / current_radius
+        try:
+            eigenvalues = sp.linalg.eigs(self.W_res, k=1, which='LM', return_eigenvectors=False)
+            current_radius = np.abs(eigenvalues[0])
+            if current_radius > 0 and not np.isnan(current_radius):
+                self.W_res *= self.params.spectral_radius / current_radius
+        except (sp.linalg.ArpackNoConvergence, np.linalg.LinAlgError):
+            # If eigenvalue computation fails, use approximation
+            # Scale by the approximate spectral radius (Frobenius norm / sqrt(size))
+            approx_radius = sp.linalg.norm(self.W_res, 'fro') / np.sqrt(self.reservoir_size)
+            if approx_radius > 0:
+                self.W_res *= self.params.spectral_radius / approx_radius
         
         # Output weights (reservoir_size -> output_dim) - to be trained
         self.W_out = np.random.rand(self.output_dim, self.reservoir_size) * 0.01
