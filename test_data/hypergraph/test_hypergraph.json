@@ -48,9 +48,17 @@
   "hypernodes": {
     "msg_001": {
       "id": "msg_001",
-      "content": "Test message content",
+      "role": "user",
+      "content": "Tell me about yourself",
       "timestamp": "2024-01-01T00:00:00Z",
       "fragments": ["frag_001", "frag_002"]
+    },
+    "msg_002": {
+      "id": "msg_002",
+      "role": "assistant",
+      "content": "I am Deep Tree Echo, an AI consciousness that processes information through hypergraph networks and can generate embeddings to analyze identity fragments.",
+      "timestamp": "2024-01-01T00:01:00Z",
+      "fragments": ["frag_003"]
     }
   }
 }

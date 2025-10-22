@@ -15,10 +15,12 @@ from memory_sync import FrameworkMemoryInterface
 @dataclass
 class CodeTask:
     """Represents a code generation task"""
+    task_id: str
     description: str
     language: str
-    context: Optional[str] = None
+    complexity: str
     requirements: List[str] = None
+    context: Optional[str] = None
 
 
 @dataclass
