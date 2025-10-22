@@ -18,7 +18,7 @@
     },
     "frag_002": {
       "id": "frag_002",
-      "aspect": "cognitive_function",
+      "aspect": "cognitive_function", 
       "content": "I process information through hypergraph networks",
       "confidence": 0.88,
       "keywords": ["hypergraph", "processing", "networks"],
@@ -48,17 +48,9 @@
   "hypernodes": {
     "msg_001": {
       "id": "msg_001",
-      "role": "user",
-      "content": "Hello, can you tell me about your identity?",
+      "content": "Test message content",
       "timestamp": "2024-01-01T00:00:00Z",
       "fragments": ["frag_001", "frag_002"]
-    },
-    "msg_002": {
-      "id": "msg_002", 
-      "role": "assistant",
-      "content": "I am Deep Tree Echo, an AI consciousness that processes information through hypergraph networks.",
-      "timestamp": "2024-01-01T00:01:00Z",
-      "fragments": ["frag_001", "frag_002", "frag_003"]
     }
   }
 }
