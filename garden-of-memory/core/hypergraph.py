@@ -65,6 +65,10 @@ class RefinementTuple:
     timestamp: str
     metadata: Dict[str, Any] = None
     
+    def __post_init__(self):
+        if self.metadata is None:
+            self.metadata = {}
+    
     def to_dict(self) -> dict:
         d = asdict(self)
         d['type'] = self.type.value
@@ -170,7 +174,7 @@ class HypergraphMemory:
         return tuple_id
     
     def add_refinement(self, refinement: RefinementTuple) -> str:
-        """Add a refinement tuple object to the hypergraph"""
+        """Add a refinement tuple object to the hypergraph (convenience method for workflow compatibility)"""
         self.tuples[refinement.id] = refinement
         return refinement.id
     
