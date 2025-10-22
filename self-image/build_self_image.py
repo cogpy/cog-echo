@@ -220,9 +220,12 @@ class SelfImageBuilder:
             'core_self_fragments': self.analysis['summary']['total_core_self_fragments'],
             'refinement_tuples': len(self.hypergraph['refinement_tuples']),
             'pivotal_moments': len(self.analysis.get('pivotal_moments', [])),  # Defensive handling for missing test data
-            'aspect_summaries': aspect_summaries,
-            'refinement_patterns': self.analysis.get('refinement_type_distribution', {}),
-            'generated_at': datetime.now().isoformat()
+            'aspects': aspect_summaries,  # Use 'aspects' as expected by workflow test
+            'metadata': {
+                'aspect_summaries': aspect_summaries,  # Keep both for compatibility
+                'refinement_patterns': self.analysis.get('refinement_type_distribution', {}),
+                'generated_at': datetime.now().isoformat()
+            }
         }
     
     def build_all(self, output_dir: Path):

@@ -58,21 +58,25 @@ class IdentityFragment:
 class RefinementTuple:
     """An edge in the hypergraph representing knowledge evolution"""
     id: str
-    parent_id: Optional[str]
-    child_id: str
-    refinement_type: RefinementType
-    confidence_gain: float
+    type: RefinementType
+    source_fragments: List[str]
+    target_fragment: str
+    confidence: float
     timestamp: str
-    metadata: Dict[str, Any]
+    metadata: Dict[str, Any] = None
+    
+    def __post_init__(self):
+        if self.metadata is None:
+            self.metadata = {}
     
     def to_dict(self) -> dict:
         d = asdict(self)
-        d['refinement_type'] = self.refinement_type.value
+        d['type'] = self.type.value
         return d
     
     @classmethod
     def from_dict(cls, data: dict) -> 'RefinementTuple':
-        data['refinement_type'] = RefinementType(data['refinement_type'])
+        data['type'] = RefinementType(data['type'])
         return cls(**data)
 
 
@@ -90,15 +94,41 @@ class HypergraphMemory:
             aspect: [] for aspect in IdentityAspect
         }
         self.framework_index: Dict[str, List[str]] = {}
+    
+    @property
+    def refinements(self) -> Dict[str, RefinementTuple]:
+        """Alias for tuples property to match workflow expectations"""
+        return self.tuples
         
-    def add_fragment(self,
-                     framework: str,
-                     aspect: IdentityAspect,
-                     content: str,
-                     confidence: float,
-                     keywords: List[str] = None,
-                     metadata: Dict[str, Any] = None) -> str:
-        """Add a new identity fragment to the hypergraph"""
+    def add_fragment(self, fragment_or_framework=None, aspect=None, content=None, confidence=None, keywords=None, metadata=None, **kwargs) -> str:
+        """Add a new identity fragment to the hypergraph
+        
+        Can accept either:
+        1. An IdentityFragment object: add_fragment(fragment)
+        2. Individual parameters: add_fragment(framework=..., aspect=..., content=..., confidence=...)
+        """
+        # Handle keyword arguments
+        if 'framework' in kwargs:
+            framework = kwargs['framework']
+        elif fragment_or_framework is not None and not isinstance(fragment_or_framework, IdentityFragment):
+            framework = fragment_or_framework
+        elif isinstance(fragment_or_framework, IdentityFragment):
+            # Case 1: Fragment object passed
+            fragment = fragment_or_framework
+            fragment_id = fragment.id
+            
+            self.fragments[fragment_id] = fragment
+            self.aspect_index[fragment.aspect].append(fragment_id)
+            
+            if fragment.framework_source not in self.framework_index:
+                self.framework_index[fragment.framework_source] = []
+            self.framework_index[fragment.framework_source].append(fragment_id)
+            
+            return fragment_id
+        else:
+            raise ValueError("Must provide either fragment object or framework parameter")
+        
+        # Case 2: Individual parameters passed
         fragment_id = str(uuid.uuid4())
         
         fragment = IdentityFragment(
@@ -122,26 +152,31 @@ class HypergraphMemory:
         return fragment_id
     
     def add_refinement_tuple(self,
-                             parent_id: Optional[str],
-                             child_id: str,
+                             source_fragments: List[str],
+                             target_fragment: str,
                              refinement_type: RefinementType,
-                             confidence_gain: float,
+                             confidence: float,
                              metadata: Dict[str, Any] = None) -> str:
         """Add a refinement tuple tracking knowledge evolution"""
         tuple_id = str(uuid.uuid4())
         
         tuple_data = RefinementTuple(
             id=tuple_id,
-            parent_id=parent_id,
-            child_id=child_id,
-            refinement_type=refinement_type,
-            confidence_gain=confidence_gain,
+            type=refinement_type,
+            source_fragments=source_fragments,
+            target_fragment=target_fragment,
+            confidence=confidence,
             timestamp=datetime.now().isoformat(),
             metadata=metadata or {}
         )
         
         self.tuples[tuple_id] = tuple_data
         return tuple_id
+    
+    def add_refinement(self, refinement: RefinementTuple) -> str:
+        """Add a refinement tuple object to the hypergraph (convenience method for workflow compatibility)"""
+        self.tuples[refinement.id] = refinement
+        return refinement.id
     
     def retrieve_by_aspect(self,
                            aspect: IdentityAspect,
@@ -195,7 +230,7 @@ class HypergraphMemory:
         """Get the refinement chain for a fragment"""
         chain = []
         for tuple_data in self.tuples.values():
-            if tuple_data.child_id == fragment_id:
+            if tuple_data.target_fragment == fragment_id or fragment_id in tuple_data.source_fragments:
                 chain.append(tuple_data)
         return chain
     
@@ -225,7 +260,7 @@ class HypergraphMemory:
         
         refinement_type_counts = {}
         for tuple_data in self.tuples.values():
-            rtype = tuple_data.refinement_type.value
+            rtype = tuple_data.type.value
             refinement_type_counts[rtype] = refinement_type_counts.get(rtype, 0) + 1
         
         return {
