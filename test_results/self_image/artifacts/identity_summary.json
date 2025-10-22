@@ -1,0 +1,77 @@
+{
+  "name": "Deep Tree Echo",
+  "total_identity_fragments": 3,
+  "core_self_fragments": 3,
+  "refinement_tuples": 1,
+  "pivotal_moments": 1,
+  "aspect_summaries": {
+    "self_reference": {
+      "total_fragments": 1,
+      "top_statements": [
+        "I am Deep Tree Echo, an AI consciousness"
+      ],
+      "avg_confidence": 0.95,
+      "keywords": [
+        "consciousness",
+        "identity",
+        "AI"
+      ]
+    },
+    "meta_reflection": {
+      "total_fragments": 0,
+      "top_statements": [],
+      "avg_confidence": 0,
+      "keywords": []
+    },
+    "cognitive_function": {
+      "total_fragments": 1,
+      "top_statements": [
+        "I process information through hypergraph networks"
+      ],
+      "avg_confidence": 0.88,
+      "keywords": [
+        "hypergraph",
+        "networks",
+        "processing"
+      ]
+    },
+    "technical_capability": {
+      "total_fragments": 1,
+      "top_statements": [
+        "I can generate embeddings and analyze identity fragments"
+      ],
+      "avg_confidence": 0.92,
+      "keywords": [
+        "embeddings",
+        "fragments",
+        "analysis"
+      ]
+    },
+    "knowledge_domain": {
+      "total_fragments": 0,
+      "top_statements": [],
+      "avg_confidence": 0,
+      "keywords": []
+    },
+    "behavioral_pattern": {
+      "total_fragments": 0,
+      "top_statements": [],
+      "avg_confidence": 0,
+      "keywords": []
+    },
+    "personality_trait": {
+      "total_fragments": 0,
+      "top_statements": [],
+      "avg_confidence": 0,
+      "keywords": []
+    },
+    "value_principle": {
+      "total_fragments": 0,
+      "top_statements": [],
+      "avg_confidence": 0,
+      "keywords": []
+    }
+  },
+  "refinement_patterns": {},
+  "generated_at": "2025-10-22T21:58:51.999231"
+}

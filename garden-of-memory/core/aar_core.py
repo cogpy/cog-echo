@@ -88,18 +88,18 @@ class RelationDynamics:
     Relation dynamics for fragment interactions
     Manages connection strengths, resonance patterns, and coherence
     """
-    connection_strength: Dict[str, float]  # connection_key -> strength
+    connection_strength: Dict[tuple, float]  # (fragment1_id, fragment2_id) -> strength
     resonance_patterns: Dict[str, Any]  # pattern_name -> pattern_data
     coherence_level: float  # Overall system coherence
     
     def add_connection(self, fragment1_id: str, fragment2_id: str, strength: float):
         """Add connection between two fragments"""
-        connection_key = f"{fragment1_id}:{fragment2_id}"
+        connection_key = (fragment1_id, fragment2_id)  # Use tuple to avoid ID separator conflicts
         self.connection_strength[connection_key] = strength
     
     def get_connection_strength(self, fragment1_id: str, fragment2_id: str) -> float:
         """Get connection strength between fragments"""
-        connection_key = f"{fragment1_id}:{fragment2_id}"
+        connection_key = (fragment1_id, fragment2_id)  # Use tuple to avoid ID separator conflicts
         return self.connection_strength.get(connection_key, 0.0)
     
     def update_coherence(self, delta: float):
