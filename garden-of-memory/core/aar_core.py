@@ -248,6 +248,7 @@ class RelationCore:
         }
         
         # Add meta-reflection fragment
+        from hypergraph import IdentityAspect
         reflection_content = f"Current self-state: {len(active_fragments)} active fragments, " \
                             f"dominant aspects: {', '.join(self_description['dominant_aspects'])}, " \
                             f"agent activation: {self.agent.activation_level:.2f}"
