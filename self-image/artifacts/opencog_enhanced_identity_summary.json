@@ -1,0 +1,82 @@
+{
+  "identity_aspects": {
+    "meta_reflection": {
+      "fragment_count": 1,
+      "confidence_mean": 0.5,
+      "confidence_std": 0.0,
+      "keyword_density": 0.2727272727272727,
+      "top_fragments": [
+        {
+          "content": "Current self-state: 0 active fragments, dominant aspects: , agent activation: 0.50",
+          "confidence": 0.5,
+          "keywords": [
+            "self",
+            "reflection",
+            "state"
+          ]
+        }
+      ]
+    }
+  },
+  "coherence_metrics": {
+    "high_confidence_fragments": 1,
+    "related_pairs": 1,
+    "semantic_similarities": 1,
+    "identity_chains": 1,
+    "coherence_score": 0.0
+  },
+  "evolution_analysis": {
+    "evolution_strategy": "integration_focused",
+    "recommended_aspects": [
+      "self_reference",
+      "meta_reflection"
+    ],
+    "coherence_analysis": {
+      "high_confidence_fragments": 1,
+      "related_pairs": 1,
+      "semantic_similarities": 1,
+      "identity_chains": 1,
+      "coherence_score": 0.0
+    },
+    "reservoir_adaptation": {
+      "spectral_radius_adjustment": 0.05,
+      "leak_rate_adjustment": -0.02,
+      "identity_weight_adjustment": 0.1
+    }
+  },
+  "reservoir_parameters": {
+    "meta_reflection": {
+      "spectral_radius": 0.49,
+      "input_scaling": 0.7727272727272727,
+      "leak_rate": 0.0505,
+      "connectivity": 0.30000000000000004,
+      "bias_scaling": 0.2636363636363636,
+      "feedback_scaling": 0.2,
+      "identity_weight": 0.475
+    }
+  },
+  "system_summary": {
+    "status": "active",
+    "timestamp": 1761168261.1326668,
+    "coherence_score": 0.0,
+    "integration_quality": 0.0,
+    "system_complexity": 0.0,
+    "active_aspects": 0,
+    "total_integrations": 1,
+    "total_adaptations": 0,
+    "performance_metrics": {
+      "avg_coherence": 0.0,
+      "avg_processing_time": 0.0014195442199707031,
+      "successful_adaptations": 0,
+      "failed_adaptations": 0
+    },
+    "aar_state": {
+      "activation_level": 0.5,
+      "active_fragments": 0,
+      "dominant_aspects": []
+    },
+    "dtesn_summary": {
+      "active_neurons": 0,
+      "mean_activation": 0.0,
+      "aspect_activations": {
+        
