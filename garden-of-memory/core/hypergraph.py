@@ -199,6 +199,19 @@ class HypergraphMemory:
                 chain.append(tuple_data)
         return chain
     
+    def get_fragment(self, fragment_id: str) -> Optional['IdentityFragment']:
+        """Get a specific fragment by ID"""
+        return self.fragments.get(fragment_id)
+    
+    def get_fragments_by_aspect(self, aspect: 'IdentityAspect') -> List['IdentityFragment']:
+        """Get all fragments for a specific aspect"""
+        fragment_ids = self.aspect_index.get(aspect, [])
+        return [self.fragments[fid] for fid in fragment_ids if fid in self.fragments]
+    
+    def get_high_confidence_fragments(self, min_confidence: float) -> List['IdentityFragment']:
+        """Get fragments with confidence above threshold"""
+        return [frag for frag in self.fragments.values() if frag.confidence >= min_confidence]
+    
     def get_statistics(self) -> Dict[str, Any]:
         """Get hypergraph statistics"""
         aspect_counts = {

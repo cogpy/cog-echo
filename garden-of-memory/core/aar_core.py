@@ -82,6 +82,75 @@ class ArenaState:
         return [self.memory.fragments[fid] for fid, _ in sorted_ids]
 
 
+@dataclass
+class RelationDynamics:
+    """
+    Relation dynamics for fragment interactions
+    Manages connection strengths, resonance patterns, and coherence
+    """
+    connection_strength: Dict[str, float]  # connection_key -> strength
+    resonance_patterns: Dict[str, Any]  # pattern_name -> pattern_data
+    coherence_level: float  # Overall system coherence
+    
+    def add_connection(self, fragment1_id: str, fragment2_id: str, strength: float):
+        """Add connection between two fragments"""
+        connection_key = f"{fragment1_id}:{fragment2_id}"
+        self.connection_strength[connection_key] = strength
+    
+    def get_connection_strength(self, fragment1_id: str, fragment2_id: str) -> float:
+        """Get connection strength between fragments"""
+        connection_key = f"{fragment1_id}:{fragment2_id}"
+        return self.connection_strength.get(connection_key, 0.0)
+    
+    def update_coherence(self, delta: float):
+        """Update overall coherence level"""
+        self.coherence_level = np.clip(self.coherence_level + delta, 0.0, 1.0)
+
+
+class AARSystem:
+    """
+    Complete Agent-Arena-Relation system
+    Integrates all components for unified operation
+    """
+    
+    def __init__(self, memory: HypergraphMemory):
+        self.memory = memory
+        self.agent = AgentState(
+            activation_level=0.5,
+            action_tendencies={},
+            current_goal="",
+            attention_focus=[]
+        )
+        self.arena = ArenaState(
+            memory=memory,
+            active_fragments=[],
+            activation_map={}
+        )
+        self.relations = RelationDynamics(
+            connection_strength={},
+            resonance_patterns={},
+            coherence_level=0.5
+        )
+        self.relation_core = RelationCore(memory)
+    
+    def process_stimulus(self, stimulus: Dict[str, Any]) -> Dict[str, Any]:
+        """Process external stimulus through the AAR system"""
+        self.relation_core.perceive(stimulus)
+        return {
+            "agent_activation": self.agent.activation_level,
+            "active_fragments": len(self.arena.active_fragments),
+            "coherence": self.relations.coherence_level
+        }
+    
+    def execute_action(self, action: Dict[str, Any]) -> Dict[str, Any]:
+        """Execute action through the AAR system"""
+        return self.relation_core.act(action)
+    
+    def get_system_state(self) -> Dict[str, Any]:
+        """Get current system state"""
+        return self.relation_core.reflect()
+
+
 class RelationCore:
     """
     Relation component: emergent self

@@ -1,0 +1,22 @@
+{
+  "summary": {
+    "total_core_self_fragments": 3,
+    "avg_confidence": 0.917,
+    "dominant_aspects": ["self_reference", "cognitive_function"]
+  },
+  "pivotal_moments": [
+    {
+      "timestamp": "2024-01-01T00:00:00Z",
+      "type": "identity_emergence",
+      "fragments": ["frag_001"],
+      "significance": 0.95
+    }
+  ],
+  "refinement_chains": [
+    {
+      "chain_id": "chain_001",
+      "fragments": ["frag_001", "frag_002", "frag_003"],
+      "refinement_type": "integration"
+    }
+  ]
+}

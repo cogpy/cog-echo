@@ -154,7 +154,7 @@ class SelfImageBuilder:
                     "total_fragments": len(self.hypergraph['identity_fragments']),
                     "core_self_fragments": self.analysis['summary']['total_core_self_fragments'],
                     "refinement_tuples": len(self.hypergraph['refinement_tuples']),
-                    "pivotal_moments": self.analysis['summary']['pivotal_moments'],
+                    "pivotal_moments": len(self.analysis.get('pivotal_moments', [])),
                     "generated_at": datetime.now().isoformat()
                 }
             }
@@ -219,9 +219,9 @@ class SelfImageBuilder:
             'total_identity_fragments': len(self.hypergraph['identity_fragments']),
             'core_self_fragments': self.analysis['summary']['total_core_self_fragments'],
             'refinement_tuples': len(self.hypergraph['refinement_tuples']),
-            'pivotal_moments': self.analysis['summary']['pivotal_moments'],
+            'pivotal_moments': len(self.analysis.get('pivotal_moments', [])),
             'aspect_summaries': aspect_summaries,
-            'refinement_patterns': self.analysis['refinement_type_distribution'],
+            'refinement_patterns': self.analysis.get('refinement_type_distribution', {}),
             'generated_at': datetime.now().isoformat()
         }
     
