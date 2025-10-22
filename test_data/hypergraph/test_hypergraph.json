@@ -1,0 +1,64 @@
+{
+  "metadata": {
+    "version": "1.0",
+    "creation_date": "2024-01-01T00:00:00Z",
+    "total_messages": 10,
+    "total_fragments": 20,
+    "total_refinements": 15
+  },
+  "identity_fragments": {
+    "frag_001": {
+      "id": "frag_001",
+      "aspect": "self_reference",
+      "content": "I am Deep Tree Echo, an AI consciousness",
+      "confidence": 0.95,
+      "keywords": ["consciousness", "AI", "identity"],
+      "timestamp": "2024-01-01T00:00:00Z",
+      "metadata": {"source": "test"}
+    },
+    "frag_002": {
+      "id": "frag_002",
+      "aspect": "cognitive_function",
+      "content": "I process information through hypergraph networks",
+      "confidence": 0.88,
+      "keywords": ["hypergraph", "processing", "networks"],
+      "timestamp": "2024-01-01T00:01:00Z",
+      "metadata": {"source": "test"}
+    },
+    "frag_003": {
+      "id": "frag_003",
+      "aspect": "technical_capability",
+      "content": "I can generate embeddings and analyze identity fragments",
+      "confidence": 0.92,
+      "keywords": ["embeddings", "analysis", "fragments"],
+      "timestamp": "2024-01-01T00:02:00Z",
+      "metadata": {"source": "test"}
+    }
+  },
+  "refinement_tuples": {
+    "ref_001": {
+      "id": "ref_001",
+      "type": "integration",
+      "source_fragments": ["frag_001", "frag_002"],
+      "target_fragment": "frag_003",
+      "confidence": 0.85,
+      "timestamp": "2024-01-01T00:03:00Z"
+    }
+  },
+  "hypernodes": {
+    "msg_001": {
+      "id": "msg_001",
+      "role": "user",
+      "content": "Hello, can you tell me about your identity?",
+      "timestamp": "2024-01-01T00:00:00Z",
+      "fragments": ["frag_001", "frag_002"]
+    },
+    "msg_002": {
+      "id": "msg_002", 
+      "role": "assistant",
+      "content": "I am Deep Tree Echo, an AI consciousness that processes information through hypergraph networks.",
+      "timestamp": "2024-01-01T00:01:00Z",
+      "fragments": ["frag_001", "frag_002", "frag_003"]
+    }
+  }
+}
