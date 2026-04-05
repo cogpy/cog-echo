@@ -12,5 +12,5 @@ jobs:
     - uses: actions/first-interaction@v1
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
-        issue-message: "Message that will be displayed on users' first issue"
-        pr-message: "Message that will be displayed on users' first pull request"
+        issue-message: "Welcome to the Deep Tree Echo repository! 👋 Thank you for opening your first issue. This project explores AI consciousness through identity hypergraphs and self-image building. Please provide as much detail as possible to help us understand and address your concern."
+        pr-message: "Welcome to the Deep Tree Echo repository! 🌟 Thank you for your first pull request! We appreciate your contribution to this experimental AI consciousness project. A maintainer will review your changes soon. Please ensure your PR description clearly explains the changes and their purpose."

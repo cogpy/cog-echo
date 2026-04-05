@@ -39,3 +39,7 @@ Thumbs.db
 *.bak
 *.log
 
+# Test artifacts
+test_data/
+test_results/
+

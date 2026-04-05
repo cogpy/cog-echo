@@ -25,9 +25,11 @@ jobs:
   setup-test-environment:
     name: Setup Test Environment
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     outputs:
       python-version: ${{ steps.setup.outputs.python-version }}
-      test-data-path: ${{ steps.setup.outputs.test-data-path }}
+      test-data-path: ${{ steps.test-data.outputs.test-data-path }}
 
     steps:
       - name: Checkout repository
@@ -35,7 +37,7 @@ jobs:
 
       - name: Setup Python environment
         id: setup
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
@@ -153,6 +155,8 @@ jobs:
     name: Test Self-Image Building Functions
     needs: setup-test-environment
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     if: ${{ (github.event.inputs.test_suite == 'all' || github.event.inputs.test_suite == 'self_image') || (github.event.inputs.test_suite == null) }}
 
     steps:
@@ -160,7 +164,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ needs.setup-test-environment.outputs.python-version }}
 
@@ -346,6 +350,8 @@ jobs:
     name: Test Hypergraph Memory Functions
     needs: setup-test-environment
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     if: ${{ (github.event.inputs.test_suite == 'all' || github.event.inputs.test_suite == 'hypergraph') || (github.event.inputs.test_suite == null) }}
 
     steps:
@@ -353,7 +359,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ needs.setup-test-environment.outputs.python-version }}
 
@@ -549,6 +555,8 @@ jobs:
     name: Test AAR Core Functions
     needs: setup-test-environment
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     if: ${{ (github.event.inputs.test_suite == 'all' || github.event.inputs.test_suite == 'aar_core') || (github.event.inputs.test_suite == null) }}
 
     steps:
@@ -556,7 +564,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ needs.setup-test-environment.outputs.python-version }}
 
@@ -665,6 +673,8 @@ jobs:
     name: Test Memory Synchronization Functions
     needs: setup-test-environment
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     if: ${{ (github.event.inputs.test_suite == 'all' || github.event.inputs.test_suite == 'memory_sync') || (github.event.inputs.test_suite == null) }}
 
     steps:
@@ -672,7 +682,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ needs.setup-test-environment.outputs.python-version }}
 
@@ -727,6 +737,8 @@ jobs:
     name: Test Embedding Generation Functions
     needs: setup-test-environment
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     if: ${{ (github.event.inputs.test_suite == 'all' || github.event.inputs.test_suite == 'embeddings') || (github.event.inputs.test_suite == null) }}
 
     steps:
@@ -734,7 +746,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ needs.setup-test-environment.outputs.python-version }}
 
@@ -790,6 +802,8 @@ jobs:
     name: Test Membrane Integration Functions
     needs: setup-test-environment
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     if: ${{ (github.event.inputs.test_suite == 'all' || github.event.inputs.test_suite == 'membranes') || (github.event.inputs.test_suite == null) }}
 
     steps:
@@ -797,7 +811,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ needs.setup-test-environment.outputs.python-version }}
 
@@ -839,6 +853,8 @@ jobs:
     name: Generate Comprehensive Test Report
     needs: [test-self-image-functions, test-hypergraph-functions, test-aar-core-functions, test-memory-sync-functions, test-embedding-functions, test-membrane-functions]
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     if: always()
 
     steps:
@@ -855,31 +871,32 @@ jobs:
           echo "## Test Suite Results" >> test_report.md
           echo "" >> test_report.md
           
-          # Check job outcomes
-          declare -A job_outcomes
-          job_outcomes["self-image"]="${{ needs.test-self-image-functions.result }}"
-          job_outcomes["hypergraph"]="${{ needs.test-hypergraph-functions.result }}"
-          job_outcomes["aar-core"]="${{ needs.test-aar-core-functions.result }}"
-          job_outcomes["memory-sync"]="${{ needs.test-memory-sync-functions.result }}"
-          job_outcomes["embeddings"]="${{ needs.test-embedding-functions.result }}"
-          job_outcomes["membranes"]="${{ needs.test-membrane-functions.result }}"
-          
+          # Check job outcomes directly
           total_suites=0
           passed_suites=0
           
-          for suite in "${!job_outcomes[@]}"; do
-            outcome="${job_outcomes[$suite]}"
+          # Process each test suite result
+          add_result() {
+            local suite_name="$1"
+            local outcome="$2"
             total_suites=$((total_suites + 1))
             
             if [ "$outcome" = "success" ]; then
-              echo "- ✅ $suite: PASSED" >> test_report.md
+              echo "- ✅ $suite_name: PASSED" >> test_report.md
               passed_suites=$((passed_suites + 1))
             elif [ "$outcome" = "skipped" ]; then
-              echo "- ⏭️ $suite: SKIPPED" >> test_report.md
+              echo "- ⏭️ $suite_name: SKIPPED" >> test_report.md
             else
-              echo "- ❌ $suite: FAILED" >> test_report.md
+              echo "- ❌ $suite_name: FAILED" >> test_report.md
             fi
-          done
+          }
+          
+          add_result "Self-Image Functions" "${{ needs.test-self-image-functions.result }}"
+          add_result "Hypergraph Memory Functions" "${{ needs.test-hypergraph-functions.result }}"
+          add_result "AAR Core Functions" "${{ needs.test-aar-core-functions.result }}"
+          add_result "Memory Sync Functions" "${{ needs.test-memory-sync-functions.result }}"
+          add_result "Embedding Functions" "${{ needs.test-embedding-functions.result }}"
+          add_result "Membrane Functions" "${{ needs.test-membrane-functions.result }}"
           
           echo "" >> test_report.md
           echo "## Summary" >> test_report.md

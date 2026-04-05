@@ -25,7 +25,6 @@ jobs:
     permissions:
       issues: write
       contents: read
-      models: read
       actions: read
 
     strategy:
@@ -80,12 +79,16 @@ jobs:
             large_body="$large_body$large_content"
           done
           
-          cat > test_data/issues/large_issue.json << EOF
+          cat > test_data/issues/large_issue.json << 'EOF'
           {
             "title": "Large issue with extensive content for testing AI inference limits",
-            "body": "$large_body"
+            "body": "LARGE_BODY_PLACEHOLDER"
           }
           EOF
+          
+          # Replace placeholder with actual content using jq to ensure proper JSON escaping
+          jq --arg body "$large_body" '.body = $body' test_data/issues/large_issue.json > test_data/issues/large_issue.json.tmp
+          mv test_data/issues/large_issue.json.tmp test_data/issues/large_issue.json
 
       - name: Prepare Basic Issue Data - ${{ matrix.test_scenario }}
         if: matrix.test_scenario == 'basic_issue_summary'
@@ -351,6 +354,8 @@ jobs:
     name: Consolidate AI Inference Test Results
     needs: ai-inference-tests
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     if: always()
 
     steps:
@@ -400,7 +405,9 @@ jobs:
           echo "- Total Tests: $total_tests" >> test_summary.md
           echo "- Passed: $passed_tests" >> test_summary.md
           echo "- Failed: $failed_tests" >> test_summary.md
-          echo "- Success Rate: $(( passed_tests * 100 / total_tests ))%" >> test_summary.md
+          if [ $total_tests -gt 0 ]; then
+            echo "- Success Rate: $(( passed_tests * 100 / total_tests ))%" >> test_summary.md
+          fi
           
           cat test_summary.md
 
